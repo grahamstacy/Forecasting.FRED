@@ -73,7 +73,7 @@ fcast <- function(ts,
   tscv0 <- tscv
   preds0 <- preds
   
-  if (boxcox = TRUE) {
+  if (boxcox == TRUE) {
     lambda0 <- forecast::BoxCox.lambda(ts0)
     ts0 <- forecast::BoxCox(ts0, lambda0)
   }
@@ -84,7 +84,7 @@ fcast <- function(ts,
     fit.arima.fcast <- forecast::auto.arima(ts,
                                             ic = "aicc")
     fitted.arima.fcast <- as.numeric(fit.arima.fcast$fitted)
-    accuracy.arima.fcast <- accuracy(fit.arima.fcast)[1:6]
+    accuracy.arima.fcast <- forecast::accuracy(fit.arima.fcast)[1:6]
     
     for (i in 1:nsim) {
       
@@ -106,7 +106,7 @@ fcast <- function(ts,
                                    allow.multiplicative.trend = TRUE,
                                    ic = "aicc")
     fitted.ets.fcast <- as.numeric(fit.ets.fcast$fitted)
-    accuracy.ets.fcast <- accuracy(fit.ets.fcast)[1:6]
+    accuracy.ets.fcast <- forecast::accuracy(fit.ets.fcast)[1:6]
     
     for (i in 1:nsim) {
       
@@ -160,7 +160,7 @@ fcast <- function(ts,
     matrix.naive.fcast <- matrix(0:0, nrow=0,ncol=h)
     fit.naive.fcast <- forecast::Arima(ts, order = c(0,1,0), seasonal = c(0,0,0), include.constant = FALSE, include.drift = FALSE, include.mean = FALSE)
     fitted.naive.fcast <- as.numeric(fit.naive.fcast$fitted)
-    accuracy.naive.fcast <- accuracy(fit.naive.fcast)[1:6]
+    accuracy.naive.fcast <- forecast::accuracy(fit.naive.fcast)[1:6]
     
     for (i in 1:nsim) {
       
@@ -180,7 +180,7 @@ fcast <- function(ts,
     matrix.snaive.fcast <- matrix(0:0, nrow=0,ncol=h)
     fit.snaive.fcast <- forecast::Arima(ts, order = c(0,0,0), seasonal = c(0,1,0), include.constant = FALSE, include.drift = FALSE, include.mean = FALSE)
     fitted.snaive.fcast <- as.numeric( fit.snaive.fcast$fitted )
-    accuracy.snaive.fcast <- accuracy(fit.snaive.fcast)[1:6]
+    accuracy.snaive.fcast <- forecast::accuracy(fit.snaive.fcast)[1:6]
     
     for (i in 1:nsim) {
       
@@ -200,7 +200,7 @@ fcast <- function(ts,
     matrix.rwd.fcast <- matrix(0:0, nrow=0,ncol=h)
     fit.rwd.fcast <- forecast::Arima(ts, order = c(0,1,0), seasonal = c(0,0,0), include.constant = TRUE)
     fitted.rwd.fcast <- as.numeric(fit.rwd.fcast$fitted)
-    accuracy.rwd.fcast <- accuracy(fit.rwd.fcast)[1:6]
+    accuracy.rwd.fcast <- forecast::accuracy(fit.rwd.fcast)[1:6]
     
     for (i in 1:nsim) {
       
@@ -220,7 +220,7 @@ fcast <- function(ts,
     matrix.nnetar.fcast <- matrix(0:0, nrow=0,ncol=h)
     fit.nnetar.fcast <- forecast::nnetar(ts)
     fitted.nnetar.fcast <- as.numeric(fit.nnetar.fcast$fitted)
-    accuracy.nnetar.fcast <- accuracy(fit.nnetar.fcast)[1:6]
+    accuracy.nnetar.fcast <- forecast::accuracy(fit.nnetar.fcast)[1:6]
     
     for (i in 1:nsim) {
       
@@ -535,7 +535,7 @@ fcast <- function(ts,
                      start = ts.start_date,
                      freq = ts.freq)
   
-  if (boxcox = TRUE) {
+  if (boxcox == TRUE) {
   
     object.fcast <- list(x = forecast::InvBoxCox(ts0, lambda=lambda0),
                        mean = forecast::InvBoxCox(middle.fcast, lambda=lambda0),
@@ -550,7 +550,7 @@ fcast <- function(ts,
                          mean = middle.fcast,
                          lower = lower.fcast,
                          upper = upper.fcast,
-                         fitted = fitted.fcast, lambda=lambda0,
+                         fitted = fitted.fcast,
                          level = (conf0*100)) %>% structure(class="forecast")
     
   }
@@ -570,10 +570,10 @@ fcast <- function(ts,
 }
 
 y <- get_fred(
-  frequency = "q",
+  frequency = "a",
   fred_api_key = "0962c1d1b6316b7c4b6c68ced8211ac9",
-  fred_series_id = "UNRATE",
+  fred_series_id = "GDP",
   units = NULL) %>%
   fcast(methods = c("m","n","s","a","e","nn"),
         tscv = TRUE,
-        h = 6)
+        h = 2)
